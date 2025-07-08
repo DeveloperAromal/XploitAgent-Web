@@ -16,9 +16,4 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", contactRoute);
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> f9a58a47192bc23bfb26e22213b892c5683519ad
 export default app;
