@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import contactRoute from "./routes/contact.router.js";
-import { Contact } from "./services/contact.service.js"
+import contactRoute from "./routes/contact.route.js";
 
 dotenv.config();
 
@@ -17,6 +16,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", contactRoute);
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> f9a58a47192bc23bfb26e22213b892c5683519ad
 export default app;
