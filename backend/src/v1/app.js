@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import contactRoute from "./routes/contact.router.js";
-import { Contact } from "./services/contact.service.js"
+import contactRoute from "./routes/contact.route.js";
 
 dotenv.config();
 
@@ -16,9 +15,5 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", contactRoute);
-
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
 
 export default app;
