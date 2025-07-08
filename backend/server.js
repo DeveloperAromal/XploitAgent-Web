@@ -10,11 +10,7 @@ app.listen(PORT, () => {
     `StudBud api is running on ${PORT} http://localhost:${PORT} 🔥🔥`
   );
   app.use("/api/v1", contactRoute)
-  app.use((req, res, next) => {
-  console.log(`➡️ API hit: ${req.method} ${req.url}`);
-  next();
-});
-
+  
 
 
 });
