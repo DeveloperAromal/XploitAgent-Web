@@ -30,6 +30,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.file{
+  background-image: url(../public/assets/file.png);
+  background-size: cover;
+    background-position: center;
+}
 .cursor {
   cursor: url("/assets/cursor_p.png") auto;
 }
