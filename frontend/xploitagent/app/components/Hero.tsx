@@ -32,7 +32,7 @@ export default function Hero() {
             <code>Try Now</code>
           </Link>
           <Link
-            href={"#"}
+            href="/contact"
             className="px-10 py-4 rounded-lg font-bold border-2 border-white hover:bg-white hover:text-neutral-900 transition-all duration-300"
           >
             <code> Contact Us</code>
