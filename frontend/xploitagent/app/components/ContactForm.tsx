@@ -41,7 +41,7 @@ export default function ContactPage() {
     const data = {
       name,
       companyname: companyName,
-      phonenumber: phoneNumber,  // 🔥 send only the number as in your working code
+      phonenumber: phoneNumber,  
       email
     };
 
@@ -122,7 +122,9 @@ export default function ContactPage() {
               </div>
               <input
                 type="tel"
-                maxLength={10}
+                maxLength={selectedCountry?.phone_number_length || 10}
+                pattern={`[0-9]{${selectedCountry?.phone_number_length || 10}}`}
+  
                 placeholder="Phone Number"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
