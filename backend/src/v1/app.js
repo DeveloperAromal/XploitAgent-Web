@@ -17,7 +17,11 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", contactRoute);
+<<<<<<< HEAD
 app.use("/api/v1", countryRoutes);
+=======
+
+>>>>>>> 88b106bccb442edc32516081b7dde5fa45e8726b
 export default app;
 console.log("Routes mounted on /api/v1");
 
