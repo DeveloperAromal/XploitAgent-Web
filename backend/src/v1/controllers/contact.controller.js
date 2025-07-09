@@ -1,4 +1,5 @@
-import { Contact } from "../services/contact.service.js"
+import  {Contact} from "../services/contact.service.js"
+
 
 export const getContact = async (req, res) => {
   try {
