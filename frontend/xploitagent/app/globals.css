@@ -30,11 +30,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.file{
+.file {
   background-image: url(../public/assets/file.png);
   background-size: cover;
-    background-position: center;
+  background-position: center;
 }
+
 .cursor {
   cursor: url("/assets/cursor_p.png") auto;
 }
@@ -62,4 +63,29 @@ body {
 
 .animate-scroll {
   animation: scroll 30s linear infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  background: #05292a;
+}
+
+.custom-scrollbar-button::-webkit-scrollbar-thumb {
+  width: 4px;
+  border-radius: 10px;
+  background: #55a7ff;
+}
+
+@keyframes wave {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
