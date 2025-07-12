@@ -170,14 +170,10 @@ export default function MainSection() {
                   </div>
 
                   <div className="right flex items-center gap-2 text-neutral-400">
-                    {/* <Link
-                      href={`/dashboard/tabs/report/${data.attack_id}`}
-                      className="px-4 py-2 bg-white font-bold text-neutral-900 rounded-md"
+                    <Link
+                      href={`/dashboard/tabs/scan/view/${data.attack_id}`}
+                      title="view details"
                     >
-                      View Report
-                    </Link> */}
-
-                    <Link href={"#"} title="view details">
                       <ArrowUpRightFromSquare />
                     </Link>
 
@@ -203,10 +199,10 @@ export default function MainSection() {
                 key={idx}
                 className="relative p-5 bg-neutral-950/50 border border-zinc-700 rounded-2xl"
               >
-                <div className="flex justify-between items-start mb-3">
+                <div className="flex justify-between items-start mb-1">
                   <div className="overflow-hidden">
                     <h3
-                      className="text-md font-bold text-white truncate"
+                      className="text-md font-bold text-white truncate uppercase mb-2"
                       title={scan.attack_id}
                     >
                       {scan.attack_name}
@@ -257,11 +253,11 @@ export default function MainSection() {
                 </p>
 
                 <Link
-                  href={`/dashboard/tabs/report/${scan.attack_id}`}
+                  href={`/dashboard/tabs/scan/view/${scan.attack_id}`}
                   className="inline-flex items-center gap-2 bg-white hover:bg-zinc-200/50 text-sm font-medium text-black px-4 py-2 rounded-lg transition"
                 >
                   <FileText className="w-4 h-4" />
-                  View Report
+                  View Details
                 </Link>
               </div>
             ))}

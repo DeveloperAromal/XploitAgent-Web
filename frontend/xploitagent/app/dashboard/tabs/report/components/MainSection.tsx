@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { History } from "lucide-react";
+import { History, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 export default function MainSection() {
   const [attackId, setAttackId] = useState<string>("");
@@ -48,10 +48,25 @@ export default function MainSection() {
   }, [attackId]);
 
   return (
-    <section className="min-h-screen bg-neutral-950 text-white font-inter p-6 flex justify-center items-start py-8">
-      <div className="w-full">
+    <section className="relative min-h-screen bg-neutral-950 text-white font-inter p-6 flex justify-center items-start py-8 overflow-hidden">
+      <div
+        className="absolute inset-0 z-20 animate-wave bg-[length:400%_400%] bg-gradient-to-tr from-green-300/10 via-emerald-400/20 to-emerald-500/50"
+        style={{
+          animation: "wave 8s ease-in-out infinite",
+          backgroundSize: "400% 400%",
+        }}
+      />
+
+      <div className="fixed bottom-10 right-10 z-60">
+        <button className="bg-gradient-to-tl from-emerald-600 to-emerald-700 px-4 py-2 rounded-2xl flex gap-2 items-center cursor-pointer text-white">
+          Want Summary <Sparkles />
+        </button>
+      </div>
+
+      {/* Content wrapper */}
+      <div className="w-full z-10">
         {loading ? (
-          <div className="text-center text-zinc-400 text-lg animate-pulse">
+          <div className="text-center text-zinc-200 text-lg animate-pulse">
             Loading report...
           </div>
         ) : report ? (
@@ -60,12 +75,12 @@ export default function MainSection() {
             <ReactMarkdown>{report}</ReactMarkdown>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center text-gray-400 text-center py-16 border-2 border-dashed border-zinc-700 rounded-2xl">
+          <div className="flex flex-col items-center justify-center text-gray-200 text-center py-16 border-2 border-dashed border-zinc-700 rounded-2xl bg-neutral-900">
             <div className="text-6xl mb-4">
               <History />
             </div>
             <p className="text-xl font-medium">No report found</p>
-            <p className="text-md mt-2 text-zinc-500">
+            <p className="text-md mt-2 text-zinc-400">
               Please check the scan ID or try again later.
             </p>
           </div>
