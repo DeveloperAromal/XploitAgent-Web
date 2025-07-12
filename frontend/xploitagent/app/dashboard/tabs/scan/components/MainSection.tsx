@@ -9,6 +9,7 @@ import {
   Trash2,
   CalendarClock,
   Target,
+  Search,
 } from "lucide-react";
 
 type ScanData = {
@@ -111,8 +112,22 @@ export default function MainSection() {
   return (
     <section
       ref={dropdownRef}
-      className="min-h-screen bg-neutral-950 p-6 font-inter flex justify-center items-start py-20"
+      className="min-h-screen bg-neutral-950 p-6 font-inter flex flex-col justify-center items-start py-14"
     >
+      <div className="search_container w-full mb-8">
+        <div className="search_box w-full flex items-center">
+          <input
+            type="text"
+            name=""
+            id=""
+            placeholder="search..."
+            className="w-full px-5 py-3 border-1 border-neutral-400 rounded-tl-md rounded-bl-md"
+          />
+          <button className="px-4 py-3 rounded-tr-md rounded-br-md border-1 border-white bg-white font-bold text-black">
+            Search
+          </button>
+        </div>
+      </div>
       <div className="w-full max-w-7xl">
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-4 text-white text-lg h-[60vh]">
@@ -180,7 +195,7 @@ export default function MainSection() {
                 </p>
 
                 <Link
-                  href="#"
+                  href={`/dashboard/tabs/report/${scan.attack_id}`}
                   className="inline-flex items-center gap-2 bg-white hover:bg-zinc-200/50 text-sm font-medium text-black px-4 py-2 rounded-lg transition"
                 >
                   <FileText className="w-4 h-4" />

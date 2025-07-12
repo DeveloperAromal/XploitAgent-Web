@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const apiBaseUrl = process.env.API_BASE_URL || "http://localhost";
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 export const signInAdmin = async ({ email, password }) => {
   const { data: userData, error: userError } = await supabase
@@ -20,7 +20,6 @@ export const signInAdmin = async ({ email, password }) => {
     console.log("User not found or Supabase error:", userError);
     return null;
   }
-
 
   console.log(`Provided password: ${password}`);
   console.log(`Hashed password from DB: ${userData.password}`);
