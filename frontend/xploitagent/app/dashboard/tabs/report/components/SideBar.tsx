@@ -43,7 +43,7 @@ export default function Sidebar() {
     },
     {
       tabName: "Scan Management",
-      path: "/dashboard/tabs/scan",
+      path: "/dashboard/tabs/scans",
       icon: Target,
     },
     {

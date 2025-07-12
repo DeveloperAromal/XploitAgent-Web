@@ -43,7 +43,7 @@ export default function Sidebar() {
     },
     {
       tabName: "Scan Management",
-      path: "/dashboard/tabs/scan",
+      path: "/dashboard/tabs/scans",
       icon: Target,
     },
     {
@@ -83,7 +83,7 @@ export default function Sidebar() {
   ];
 
   const handlePath = (path: string) => {
-    setIsOpen(false); // close sidebar on mobile
+    setIsOpen(false);
     window.open(path, "_self");
   };
 

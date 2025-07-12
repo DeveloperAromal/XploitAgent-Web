@@ -34,9 +34,18 @@ export async function getClient(client_id) {
   return data;
 }
 
+export async function getClientById(client_id) {
+  const { data, error } = await supabase
+    .from("clients")
+    .select("*")
+    .eq("client_id", client_id);
+  if (error) throw error;
+  return data;
+}
+
 export async function getHistory(client_id) {
   const { data, error } = await supabase
-    .from("reports")
+    .from("report")
     .select("*")
     .eq("client_id", client_id);
   if (error) throw error;
@@ -60,3 +69,6 @@ export async function attackData(attack_id) {
   if (error) throw error;
   return data;
 }
+
+
+

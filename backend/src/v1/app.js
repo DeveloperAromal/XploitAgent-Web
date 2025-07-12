@@ -5,6 +5,7 @@ import contactRoute from "./routes/contact.route.js";
 import countryRoutes from "./routes/country.route.js";
 import clientRoute from "./routes/client.route.js";
 import authRoute from "./routes/auth.route.js";
+import vulnerabilityRoute from "./routes/vulnerabilities.route.js";
 
 dotenv.config();
 
@@ -21,5 +22,6 @@ app.use("/api/v1", authRoute);
 app.use("/api/v1", contactRoute);
 app.use("/api/v1", countryRoutes);
 app.use("/api/v1", clientRoute);
+app.use("/api/v1", vulnerabilityRoute);
 
 export default app;

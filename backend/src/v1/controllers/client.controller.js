@@ -4,6 +4,8 @@ import {
   createAttack,
   createClient,
   getClient,
+  getClientById,
+  getHistory,
   scanData,
 } from "../services/client.service.js";
 import { sendCredentialsEmail } from "../utils/mail.js";
@@ -23,17 +25,17 @@ export const insertClient = async (req, res) => {
       password
     );
 
-    res.status(201).json(client); 
+    res.status(201).json(client);
 
     const loginLink = `https://dashboard.xploitagent.com/dashboard/${client.client_id}`;
 
     await sendCredentialsEmail(
       email,
-      "🔐 Your XploitAgent Credentials", 
-      email, 
-      password, 
-      loginLink, 
-      process.env.APP_EMAIL, 
+      "🔐 Your XploitAgent Credentials",
+      email,
+      password,
+      loginLink,
+      process.env.APP_EMAIL,
       process.env.APP_PASSWORD
     );
   } catch (error) {
@@ -54,8 +56,8 @@ export const scanReport = async (req, res) => {
 
 export const getHistoryData = async (req, res) => {
   try {
-    const { client_id } = req.body;
-    const data = await scanData(client_id);
+    const { client_id } = req.params;
+    const data = await getHistory(client_id);
     res.json(data);
   } catch (e) {
     console.log(e);
@@ -86,6 +88,16 @@ export const getAttackData = async (req, res) => {
   try {
     const { attack_id } = req.params;
     const resData = await attackData(attack_id);
+    res.json(resData);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getClientUsingId = async (req, res) => {
+  try {
+    const { client_id } = req.params;
+    const resData = await getClientById(client_id);
     res.json(resData);
   } catch (e) {
     console.log(e);
