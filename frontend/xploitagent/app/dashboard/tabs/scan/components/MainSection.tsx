@@ -11,6 +11,7 @@ import {
   Target,
   Search,
   Axis3D,
+  ArrowUpRightFromSquare,
 } from "lucide-react";
 
 type ScanData = {
@@ -151,17 +152,42 @@ export default function MainSection() {
         </div>
 
         <div className="searched_data relative">
-          {searchData.length > 0 &&
-            searchData.map((data, id) => (
-              <div
-                key={id}
-                className="card w-full absolute top-2 z-2000 border-1 border-stone-700 rounded-md bg-neutral-900/40 backdrop-blur-2xl px-2 py-2"
-              >
-                <h2 className="text-xl font-bold">{data.attack_name}</h2>
-                <h2 className="text-sm text-neutral-500">{data.attack_id}</h2>
-                <p>{data.target}</p>
-              </div>
-            ))}
+          <div className="suggestion_container w-full absolute top-2 z-2000">
+            {searchData.length > 0 &&
+              searchData.map((data, id) => (
+                <div
+                  key={id}
+                  className="card flex items-center justify-between w-full  border-1 border-stone-700 rounded-md bg-neutral-900 px-2 py-2"
+                >
+                  <div className="left">
+                    <h2 className="mb-2 text-xl font-bold">
+                      {data.attack_name}
+                    </h2>
+                    <h2 className="text-sm text-neutral-500">
+                      {data.attack_id}
+                    </h2>
+                    <p className="text-sm text-emerald-500">{data.target}</p>
+                  </div>
+
+                  <div className="right flex items-center gap-2 text-neutral-400">
+                    {/* <Link
+                      href={`/dashboard/tabs/report/${data.attack_id}`}
+                      className="px-4 py-2 bg-white font-bold text-neutral-900 rounded-md"
+                    >
+                      View Report
+                    </Link> */}
+
+                    <Link href={"#"} title="view details">
+                      <ArrowUpRightFromSquare />
+                    </Link>
+
+                    <Link href={"#"} title="view Report">
+                      <FileText />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
       <div className="w-full max-w-7xl">
