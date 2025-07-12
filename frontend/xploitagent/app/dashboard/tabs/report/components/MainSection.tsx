@@ -63,7 +63,6 @@ export default function MainSection() {
         </button>
       </div>
 
-      {/* Content wrapper */}
       <div className="w-full z-10">
         {loading ? (
           <div className="text-center text-zinc-200 text-lg animate-pulse">
