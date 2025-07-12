@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import {
@@ -10,6 +10,7 @@ import {
   CalendarClock,
   Target,
   Search,
+  Axis3D,
 } from "lucide-react";
 
 type ScanData = {
@@ -31,6 +32,9 @@ export default function MainSection() {
   const [loading, setLoading] = useState<boolean>(true);
   const [name, setName] = useState("");
   const [menuOpenIndex, setMenuOpenIndex] = useState<number | null>(null);
+
+  const [search, setSearch] = useState("");
+  const [searchData, setSearchData] = useState<ScanData[]>([]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const BASE_URL = "http://localhost:4000";
@@ -105,6 +109,22 @@ export default function MainSection() {
     fetchClientName();
   }, [clientId]);
 
+  useEffect(() => {
+    const handleSearch = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/api/v1/search?query=${search}`
+        );
+        setSearchData(res.data);
+        console.log(searchData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (search) handleSearch();
+  }, [search]);
+
   const toggleMenu = (index: number) => {
     setMenuOpenIndex(menuOpenIndex === index ? null : index);
   };
@@ -120,12 +140,28 @@ export default function MainSection() {
             type="text"
             name=""
             id=""
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="search..."
             className="w-full px-5 py-3 border-1 border-neutral-400 rounded-tl-md rounded-bl-md"
           />
           <button className="px-4 py-3 rounded-tr-md rounded-br-md border-1 border-white bg-white font-bold text-black">
             Search
           </button>
+        </div>
+
+        <div className="searched_data relative">
+          {searchData.length > 0 &&
+            searchData.map((data, id) => (
+              <div
+                key={id}
+                className="card w-full absolute top-2 z-2000 border-1 border-stone-700 rounded-md bg-neutral-900/40 backdrop-blur-2xl px-2 py-2"
+              >
+                <h2 className="text-xl font-bold">{data.attack_name}</h2>
+                <h2 className="text-sm text-neutral-500">{data.attack_id}</h2>
+                <p>{data.target}</p>
+              </div>
+            ))}
         </div>
       </div>
       <div className="w-full max-w-7xl">
