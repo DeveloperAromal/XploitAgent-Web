@@ -52,6 +52,16 @@ export const scanReport = async (req, res) => {
   }
 };
 
+export const getHistoryData = async (req, res) => {
+  try {
+    const { client_id } = req.body;
+    const data = await scanData(client_id);
+    res.json(data);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const getClientsData = async (req, res) => {
   try {
     const { client_id } = req.params;

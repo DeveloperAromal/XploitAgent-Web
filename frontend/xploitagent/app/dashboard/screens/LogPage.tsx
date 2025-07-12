@@ -7,7 +7,6 @@ import {
   EllipsisVertical,
   GitBranch,
   Github,
-  Info,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
@@ -17,6 +16,7 @@ interface LogEntry {
   timestamp: string;
   info: "info" | "success" | "error" | "warn";
   message: string;
+  attack_id?: string;
 }
 
 export default function LogPage() {
@@ -26,13 +26,29 @@ export default function LogPage() {
   const [attackData, setAttackData] = useState<any>(null);
 
   const base_url = "http://localhost:4000";
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const pathSegments = window.location.pathname.split("/");
+      const lastSegment = pathSegments[pathSegments.length - 1];
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+      if (uuidRegex.test(lastSegment)) {
+        setAttackId(lastSegment);
+        console.log("Extracted UUID:", lastSegment);
+      } else {
+        console.warn("No valid UUID found in the URL.");
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const fetchAttackData = async () => {
       try {
         const res = await axios.get(
           `${base_url}/api/v1/get/attackData/${attackId}`
         );
-        console.log(res.data);
         setAttackData(res.data[0]);
       } catch (e) {
         console.error("Error fetching attack data:", e);
@@ -51,49 +67,18 @@ export default function LogPage() {
         const res = await axios.post("http://127.0.0.1:5000/target", {
           target: attackData.target,
           client_id: attackData.client_id,
+          attack_id: attackData.attack_id,
         });
         console.log("Target triggered successfully", res.data);
       } catch (e) {
         console.log("Error triggering target:", e);
       }
     };
-  
+
     if (attackData) {
       attackTarget();
     }
-  }, [attackData]); // ✅ This makes sure it's called only when attackData is available
-  
-
-  const copyToClipboard = (text: string) => {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-      document.execCommand("copy");
-      console.log("Text copied to clipboard:", text);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
-    document.body.removeChild(textarea);
-  };
-
-  // Extract UUID from URL
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const pathSegments = window.location.pathname.split("/");
-      const lastSegment = pathSegments[pathSegments.length - 1];
-      const uuidRegex =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-      if (uuidRegex.test(lastSegment)) {
-        setAttackId(lastSegment);
-        console.log("Extracted UUID:", lastSegment);
-      } else {
-        console.warn("No valid UUID found in the URL.");
-      }
-    }
-  }, []);
+  }, [attackData]);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -117,6 +102,7 @@ export default function LogPage() {
                   | "error"
                   | "warn",
                 message: parsed.message || parsed.log,
+                attack_id: parsed.attack_id,
               };
             } catch (e) {
               console.error("Error parsing log line:", e, line);
@@ -125,23 +111,42 @@ export default function LogPage() {
           })
           .filter(Boolean) as LogEntry[];
 
-        setLogs(newLogs);
+        const filteredLogs = newLogs.filter(
+          (log) => log.attack_id === attackId
+        );
+
+        setLogs(filteredLogs);
       } catch (error) {
         console.error("Failed to fetch logs:", error);
       }
     };
 
-    fetchLogs();
-    const intervalId = setInterval(fetchLogs, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
+    if (attackId) {
+      fetchLogs();
+      const intervalId = setInterval(fetchLogs, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [attackId]);
 
-  // Scroll to bottom of logs on update
   useEffect(() => {
     if (logContainerRef.current) {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [logs]);
+
+  const copyToClipboard = (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      console.log("Text copied to clipboard:", text);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+    document.body.removeChild(textarea);
+  };
 
   return (
     <section className="h-[150vh] bg-neutral-950 text-gray-100 font-sans">
@@ -201,33 +206,6 @@ export default function LogPage() {
       </div>
 
       <div className="p-8">
-        {/*  <div className="border border-gray-700 rounded-lg p-5 mb-6 bg-neutral-900 shadow-sm">
-          <h3 className="text-lg font-semibold text-white mb-2">
-            Latest Trigger Activity {attackData?.created_at}
-          </h3>
-          {logs.length > 0 && (
-            <>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 text-gray-300 mb-1">
-                <p className="text-md font-medium">{logs[0].timestamp}</p>
-                <span
-                  className={`text-white text-xs font-semibold px-3 py-1 rounded-full uppercase ${
-                    logs[0].info === "error"
-                      ? "bg-red-700"
-                      : logs[0].info === "success"
-                      ? "bg-green-700"
-                      : "bg-gray-600"
-                  }`}
-                >
-                  {logs[0].info === "error" ? "Cancelled" : logs[0].info}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-4 text-gray-400 text-sm">
-                <p>{logs[0].message}</p>
-              </div>
-            </>
-          )}
-        </div> */}
-
         <div className="border border-zinc-700 rounded-lg bg-neutral-900 shadow-sm">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-b border-gray-700">
             <Link

@@ -34,6 +34,15 @@ export async function getClient(client_id) {
   return data;
 }
 
+export async function getHistory(client_id) {
+  const { data, error } = await supabase
+    .from("reports")
+    .select("*")
+    .eq("client_id", client_id);
+  if (error) throw error;
+  return data;
+}
+
 export async function createAttack(target, attack_name, client_id) {
   const { data, error } = await supabase
     .from("report")
