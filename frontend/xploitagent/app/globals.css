@@ -89,7 +89,9 @@ body {
     background-position: 0% 50%;
   }
 }
-
+.blur-10xl{
+  filter:blur(400px)
+}
 .rotate_loading {
   animation: loading_rotation 1s linear infinite;
 }
