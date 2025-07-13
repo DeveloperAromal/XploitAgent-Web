@@ -25,7 +25,7 @@ export default function Chat() {
         `http://localhost:4000/api/v1/bot/${encodeURIComponent(question)}`
       );
 
-      const botReply = res.data?.answer || "🤖 Hmm, couldn't fetch an answer.";
+      const botReply = res.data?.message || "🤖 Hmm, couldn't fetch an answer.";
       setMessages((prev) => [...prev, { role: "bot", text: botReply }]);
     } catch {
       setMessages((prev) => [
