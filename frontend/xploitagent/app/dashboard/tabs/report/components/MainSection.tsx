@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { History, Sparkles } from "lucide-react";
+import { History, Loader2Icon, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import clsx from "clsx";
 
@@ -157,8 +157,12 @@ export default function MainSection() {
           )}
           disabled={summaryLoading}
         >
-          {summaryLoading ? "Speaking..." : "Want Summary"}
-          <Sparkles size={18} />
+          {summaryLoading ? "Speaking..." : "Audio Summary"}
+          {summaryLoading ? (
+            <Loader2Icon size={18} className="rotate_loading" />
+          ) : (
+            <Sparkles size={18} />
+          )}
         </button>
       </div>
 

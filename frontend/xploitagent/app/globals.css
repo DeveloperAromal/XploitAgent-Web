@@ -76,7 +76,6 @@ body {
   background: #55a7ff;
 }
 
-
 @keyframes wave {
   0% {
     background-position: 0% 50%;
@@ -88,5 +87,17 @@ body {
 
   100% {
     background-position: 0% 50%;
+  }
+}
+
+.rotate_loading {
+  animation: loading_rotation 1s linear infinite;
+}
+@keyframes loading_rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
