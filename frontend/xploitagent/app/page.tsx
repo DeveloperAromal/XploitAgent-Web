@@ -19,12 +19,11 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Supporters />
-      {/* <LatestNews /> */}
       <Threat />
-      <VidSec />
-      {/*<VideoSection /> */}
       <WhoThisIsFor />
-
+      {/* <LatestNews /> */}
+      {/* <VidSec /> */}
+      {/*<VideoSection /> */}
       {/* <WhyChooseEyeShield /> */}
       {/* <PainPoint /> */}
       {/* <Solution /> */}
