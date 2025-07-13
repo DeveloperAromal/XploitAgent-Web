@@ -1,5 +1,6 @@
 import Features from "./components/Features";
 import Hero from "./components/Hero";
+import Chat from "./components/includes/Chat";
 import Footer from "./components/includes/Footer";
 import Navbar from "./components/includes/Navbar";
 import LatestNews from "./components/LatestNews";
@@ -22,13 +23,14 @@ export default function Home() {
       <Threat />
       <VidSec />
       {/*<VideoSection /> */}
-      <WhoThisIsFor /> 
-      
+      <WhoThisIsFor />
+
       {/* <WhyChooseEyeShield /> */}
       {/* <PainPoint /> */}
       {/* <Solution /> */}
       {/* <Features /> */}
       {/* <Footer /> */}
+      <Chat />
     </main>
   );
 }
