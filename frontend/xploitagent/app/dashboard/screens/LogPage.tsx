@@ -21,6 +21,8 @@ interface LogEntry {
 
 export default function LogPage() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [logFilter, setLogFilter] = useState("all");
+  const [showDropdown, setShowDropdown] = useState(false);
   const logContainerRef = useRef<HTMLDivElement>(null);
   const [attackId, setAttackId] = useState("");
   const [attackData, setAttackData] = useState<any>(null);
@@ -80,54 +82,66 @@ export default function LogPage() {
     }
   }, [attackData]);
 
+  const fetchLogs = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/logs");
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      const text = await response.text();
+      const newLogs: LogEntry[] = text
+        .split("\n")
+        .filter(Boolean)
+        .map((line: string) => {
+          try {
+            const parsed = JSON.parse(line);
+            return {
+              timestamp: parsed.timestamp,
+              info: (parsed.level ? parsed.level.toLowerCase() : "info") as
+                | "info"
+                | "success"
+                | "error"
+                | "warn",
+              message: parsed.message || parsed.log,
+              attack_id: parsed.attack_id,
+            };
+          } catch {
+            return null;
+          }
+        })
+        .filter(Boolean) as LogEntry[];
+
+      const filteredLogs = newLogs.filter((log) => {
+        if (log.attack_id !== attackId) return false;
+
+        if (logFilter === "all") return true;
+
+        const now = new Date().getTime();
+        const logTime = new Date(log.timestamp).getTime();
+        const diff = now - logTime;
+
+        if (logFilter === "1h" && diff <= 60 * 60 * 1000) return true;
+        if (logFilter === "24h" && diff <= 24 * 60 * 60 * 1000) return true;
+        if (logFilter === "7d" && diff <= 7 * 24 * 60 * 60 * 1000) return true;
+
+        return false;
+      });
+
+      setLogs(filteredLogs);
+    } catch (error) {
+      console.error("Failed to fetch logs:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/api/logs");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const text = await response.text();
-        const newLogs: LogEntry[] = text
-          .split("\n")
-          .filter(Boolean)
-          .map((line: string) => {
-            try {
-              const parsed = JSON.parse(line);
-              return {
-                timestamp: parsed.timestamp,
-                info: (parsed.level ? parsed.level.toLowerCase() : "info") as
-                  | "info"
-                  | "success"
-                  | "error"
-                  | "warn",
-                message: parsed.message || parsed.log,
-                attack_id: parsed.attack_id,
-              };
-            } catch (e) {
-              console.error("Error parsing log line:", e, line);
-              return null;
-            }
-          })
-          .filter(Boolean) as LogEntry[];
-
-        const filteredLogs = newLogs.filter(
-          (log) => log.attack_id === attackId
-        );
-
-        setLogs(filteredLogs);
-      } catch (error) {
-        console.error("Failed to fetch logs:", error);
-      }
-    };
-
     if (attackId) {
       fetchLogs();
       const intervalId = setInterval(fetchLogs, 1000);
       return () => clearInterval(intervalId);
     }
-  }, [attackId]);
+  }, [attackId, logFilter]);
 
+  
   useEffect(() => {
     if (logContainerRef.current) {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
@@ -208,12 +222,44 @@ export default function LogPage() {
       <div className="p-8">
         <div className="border border-zinc-700 rounded-lg bg-neutral-900 shadow-sm">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-b border-gray-700">
-            <Link
-              href="#"
-              className="flex items-center gap-2 border border-gray-600 text-gray-300 px-4 py-2 rounded-md text-sm hover:bg-gray-700 hover:text-white transition-colors duration-200"
-            >
-              All Logs <ChevronDown size={16} />
-            </Link>
+            <div className="relative inline-block text-left">
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center gap-2 border border-gray-600 text-gray-300 px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition"
+              >
+                {logFilter === "all"
+                  ? "All Logs"
+                  : logFilter === "1h"
+                  ? "Last 1 Hour"
+                  : logFilter === "24h"
+                  ? "Last 24 Hours"
+                  : "Last 7 Days"}
+                <ChevronDown size={16} />
+              </button>
+
+              {showDropdown && (
+                <div className="absolute z-10 mt-2 w-44 bg-neutral-900 border border-gray-700 rounded-md shadow-lg">
+                  {[
+                    { label: "All Logs", value: "all" },
+                    { label: "Last 1 Hour", value: "1h" },
+                    { label: "Last 24 Hours", value: "24h" },
+                    { label: "Last 7 Days", value: "7d" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => {
+                        setLogFilter(option.value);
+                        setShowDropdown(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               className="flex items-center border border-gray-600 text-gray-300 px-3 py-2 rounded-md hover:bg-gray-700 hover:text-white transition-colors duration-200"
               aria-label="More options"

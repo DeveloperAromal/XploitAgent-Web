@@ -32,18 +32,20 @@ export async function askGemini(message) {
   return await callGemini(message);
 }
 
-export async function summarizeTestResultsWithGemini(testResults) {
-  const prompt = `
-You are a security assistant. Given the following technical test results, generate a summary highlighting:
+export async function summarizeTestResultsWithGemini(report) {
+const prompt = `
+You are a security assistant. Given the following technical test results, generate a concise summary highlighting:
 - Key findings
 - Potential risks
 - Recommended next steps
+
+Please ensure the summary is no longer than 500 characters.
 
 Respond with a short, clear paragraph.
 
 Test results:
 """ 
-${testResults}
+${report}
 """
 `;
 

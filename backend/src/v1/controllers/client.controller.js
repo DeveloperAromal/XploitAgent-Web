@@ -10,19 +10,21 @@ import {
 } from "../services/client.service.js";
 import { sendCredentialsEmail } from "../utils/mail.js";
 import { generatePass } from "../utils/password_generator.js";
+import bcrypt from "bcrypt"
 
 export const insertClient = async (req, res) => {
   try {
     const password = generatePass(12);
+    
     const { name, email, phonenumber, company_name, is_verified } = req.body;
-
+    const hashpass = await bcrypt.hash(password, 10)
     const client = await createClient(
       name,
       email,
       phonenumber,
       company_name,
       is_verified,
-      password
+     hashpass
     );
 
     res.status(201).json(client);

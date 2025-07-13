@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 
-// Define the type for the JWT payload
 type jwtPayload = {
   exp?: number; // Expiration timestamp
   [key: string]: any; // Allow other properties
@@ -17,11 +16,12 @@ export default function Login() {
     email: "",
     password: "",
   });
+
+  const [clientId, setClientId] = useState("");
+  const [name, setName] = useState("");
   const router = useRouter();
 
-  // Define the base URL for API requests
   const BASE_URL = process.env.APP_BASE_URL || "http://localhost:4000";
-  // Handle input field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -29,6 +29,21 @@ export default function Login() {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const pathSegments = window.location.pathname.split("/");
+      const lastSegment = pathSegments[pathSegments.length - 1];
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+      if (uuidRegex.test(lastSegment)) {
+        setClientId(lastSegment);
+      } else {
+        console.warn("No valid UUID found in the URL.");
+      }
+    }
+  }, []);
 
   // Handle login form submission
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,6 +84,20 @@ export default function Login() {
     }
   }, [router]); // Add router to dependency array
 
+  useEffect(() => {
+    const fetchName = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/api/v1/get/client-by-id/${clientId}`
+        );
+        setName(res.data[0]?.name);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchName();
+  }, [clientId]);
+
   return (
     <section className="h-dvh font-inter bg-black text-white">
       <div className="flex min-h-screen">
@@ -76,7 +105,7 @@ export default function Login() {
         <div className="w-3/4 flex items-center justify-center px-10">
           <div className="w-full max-w-md">
             <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-8 leading-tight">
-              Welcome Back
+              Welcome Back {name}
             </h1>
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
