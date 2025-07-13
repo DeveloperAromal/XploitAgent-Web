@@ -1,8 +1,9 @@
 "use client";
 
-import { MessageCircle, X, SendHorizonal } from "lucide-react";
+import { X, SendHorizonal } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
+import Image from "next/image";
 
 export default function Chat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function Chat() {
         `http://localhost:4000/api/v1/bot/${encodeURIComponent(question)}`
       );
 
-      const botReply = res.data?.message || "🤖 Hmm, couldn't fetch an answer.";
+      const botReply = res.data?.message || "Hmm, couldn't fetch an answer.";
       setMessages((prev) => [...prev, { role: "bot", text: botReply }]);
     } catch {
       setMessages((prev) => [
@@ -44,7 +45,6 @@ export default function Chat() {
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen ? (
         <div className="bg-neutral-900 backdrop-blur-2xl w-96 h-[500px] rounded-2xl shadow-2xl flex flex-col border border-neutral-800 overflow-hidden">
-          {/* Header */}
           <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white px-5 py-3 flex justify-between items-center">
             <h2 className="font-semibold text-lg flex items-center gap-2">
               XploitAgent AI
@@ -58,7 +58,6 @@ export default function Chat() {
             </button>
           </div>
 
-          {/* Chat Area */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 text-sm text-gray-200">
             {messages.length === 0 ? (
               <div className="text-center mt-10">
@@ -91,8 +90,14 @@ export default function Chat() {
                 ))}
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="p-3 bg-neutral-800 rounded-2xl text-gray-400 animate-pulse">
-                      🤖 Thinking...
+                    <div className="p-3 bg-neutral-800 rounded-2xl text-gray-400 animate-pulse inline-flex gap-2.5 items-center justify-center">
+                      <Image
+                        src="/assets/logo.png"
+                        alt="Logo"
+                        width={15}
+                        height={15}
+                      />{" "}
+                      Thinking...
                     </div>
                   </div>
                 )}
@@ -100,7 +105,6 @@ export default function Chat() {
             )}
           </div>
 
-          {/* Input Area */}
           <div className="flex items-center gap-2 border-t border-neutral-800 px-4 py-3 bg-neutral-900">
             <input
               type="text"
@@ -121,9 +125,9 @@ export default function Chat() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-br from-emerald-600 to-green-600 text-white p-4 rounded-full shadow-xl hover:scale-110 transition"
+          className="bg-gradient-to-br from-emerald-600 to-green-600 text-white py-4.5 px-4 rounded-full shadow-xl hover:scale-110 transition"
         >
-          <MessageCircle className="w-5 h-5" />
+          <Image src="/assets/logo.png" alt="Logo" width={25} height={25} />
         </button>
       )}
     </div>
