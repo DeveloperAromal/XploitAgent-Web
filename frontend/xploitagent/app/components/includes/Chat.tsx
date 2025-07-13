@@ -45,7 +45,7 @@ export default function Chat() {
       {isOpen ? (
         <div className="bg-neutral-900 backdrop-blur-2xl w-96 h-[500px] rounded-2xl shadow-2xl flex flex-col border border-neutral-800 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-sky-600 to-indigo-600 text-white px-5 py-3 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white px-5 py-3 flex justify-between items-center">
             <h2 className="font-semibold text-lg flex items-center gap-2">
               XploitAgent AI
               <span className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
@@ -62,7 +62,7 @@ export default function Chat() {
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 text-sm text-gray-200">
             {messages.length === 0 ? (
               <div className="text-center mt-10">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-400 via-purple-400 to-pink-500 text-transparent bg-clip-text">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-300 via-green-400 to-green-500 text-transparent bg-clip-text">
                   Wanna know about cybersecurity ?
                 </h1>
                 <p className="text-gray-400 mt-2">
@@ -108,11 +108,11 @@ export default function Chat() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className="flex-1 px-4 py-2 rounded-full bg-neutral-800 border border-neutral-700 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+              className="flex-1 px-4 py-2 rounded-full bg-neutral-800 border border-neutral-700 placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
             />
             <button
               onClick={handleSend}
-              className="bg-sky-600 hover:bg-sky-700 text-white p-3 rounded-full transition"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-full transition"
             >
               <SendHorizonal className="w-4 h-4" />
             </button>
@@ -121,7 +121,7 @@ export default function Chat() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-br from-sky-600 to-indigo-600 text-white p-4 rounded-full shadow-xl hover:scale-110 transition"
+          className="bg-gradient-to-br from-emerald-600 to-green-600 text-white p-4 rounded-full shadow-xl hover:scale-110 transition"
         >
           <MessageCircle className="w-5 h-5" />
         </button>
