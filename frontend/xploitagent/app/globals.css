@@ -50,7 +50,19 @@ body {
   background-position: center;
 }
 
-/* looping animation infinite*/
+.ai-bg-2 {
+  background-image: url(../public/assets/ai-bg-3.png);
+  background-size: cover;
+  background-position: center;
+}
+
+.ai-bg-3 {
+  background-image: url(../public/assets/ai-bg-1.webp);
+  background-size: cover;
+  background-position: center;
+}
+
+
 @keyframes scroll {
   0% {
     transform: translateX(0%);
@@ -70,6 +82,9 @@ body {
   background: #05292a;
 }
 
+.no-scroll-bar::-webkit-scrollbar{
+  width: 0;
+}
 .custom-scrollbar-button::-webkit-scrollbar-thumb {
   width: 4px;
   border-radius: 10px;
@@ -89,16 +104,20 @@ body {
     background-position: 0% 50%;
   }
 }
-.blur-10xl{
-  filter:blur(400px)
+
+.blur-10xl {
+  filter: blur(400px)
 }
+
 .rotate_loading {
   animation: loading_rotation 1s linear infinite;
 }
+
 @keyframes loading_rotation {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

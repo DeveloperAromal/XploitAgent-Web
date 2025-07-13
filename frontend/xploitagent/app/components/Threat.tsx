@@ -1,9 +1,8 @@
 import GlareHover from "./ui/GlareHover";
-import SpotlightCard from "./ui/SpotlightCard";
 
 export default function Threat() {
   return (
-    <section className="w-full px-0 pt-20 text-white">
+    <section className="px-0 pt-20 text-white flex items-center justify-center">
       <div className="w-full">
         <div className="flex items-center justify-center pb-10 flex-wrap w-full">
           <div className="flex flex-wrap gap-10 w-full px-10">
