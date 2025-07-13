@@ -10,8 +10,7 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { useEffect, useRef, useState } from "react";
 
 interface LogEntry {
   timestamp: string;
@@ -25,16 +24,19 @@ export default function ViewDetails() {
   const [attackId, setAttackId] = useState("");
   const [attackData, setAttackData] = useState<any>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
-
   const [name, setName] = useState("");
 
+  const logsEndRef = useRef<HTMLDivElement | null>(null);
   const BASE_URL = "http://localhost:4000";
+
+  const scrollToBottom = () => {
+    logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     const validate = async () => {
       try {
         const token = localStorage.getItem("token");
-
         const { data } = await axios.get(`${BASE_URL}/api/v1/admin/validate`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -140,117 +142,158 @@ export default function ViewDetails() {
     }
   }, [attackId]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [logs]);
+
+  const trigger = async () => {
+    if (
+      !attackData?.target ||
+      !attackData?.client_id ||
+      !attackData?.attack_id
+    ) {
+      console.warn("Trigger blocked: Missing attack data");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/target", {
+        target: attackData.target,
+        client_id: attackData.client_id,
+        attack_id: attackData.attack_id,
+      });
+      console.log("Attack triggered:", response.data);
+    } catch (e) {
+      console.error("Error triggering attack:", e);
+    }
+  };
+
   return (
     <section className="p-10">
       <div>
-        <div>
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="text-4xl uppercase mb-4">
-                {attackData?.attack_name}
-              </h2>
-              <div className="bg-neutral-800 border border-emerald-300 rounded-xl inline-flex items-center gap-2 px-2 py-1 mb-3">
-                <Target className="w-4 h-4 text-zinc-400" />
-                <p className="text-sm text-neutral-300">
-                  {name} /{" "}
-                  <span className="text-zinc-400">{attackData?.attack_id}</span>
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <h2 className="text-neutral-400">{attackData?.target}</h2>
-                <Link
-                  href={`${attackData?.target}`}
-                  className="flex items-center justify-center"
-                >
-                  <SquareArrowOutUpRight className="w-4 h-4 text-sky-600" />
-                </Link>
-              </div>
+        <div className="flex items-end justify-between">
+          <div>
+            <h2 className="text-4xl uppercase mb-4">
+              {attackData?.attack_name}
+            </h2>
+            <div className="bg-neutral-800 border border-emerald-300 rounded-xl inline-flex items-center gap-2 px-2 py-1 mb-3">
+              <Target className="w-4 h-4 text-zinc-400" />
+              <p className="text-sm text-neutral-300">
+                {name} /{" "}
+                <span className="text-zinc-400">{attackData?.attack_id}</span>
+              </p>
             </div>
-            <div className="flex gap-4">
-              <button className="inline-flex items-center gap-2 justify-center bg-neutral-900 border-emerald-600 border-2 rounded-xl px-2 py-2 text-neutral-200">
-                Trigger <CloudLightning />
-              </button>
-              <Link href={`/dashboard/tabs/report/${attackData?.attack_id}`}>
-                <button className="inline-flex items-center gap-2 justify-center bg-emerald-900 border-emerald-600 border-2 rounded-xl px-2 py-2 text-neutral-200">
-                  See Report <File />
-                </button>
+            <div className="flex gap-3">
+              <h2 className="text-neutral-400">{attackData?.target}</h2>
+              <Link
+                href={`${attackData?.target}`}
+                className="flex items-center justify-center"
+              >
+                <SquareArrowOutUpRight className="w-4 h-4 text-sky-600" />
               </Link>
             </div>
           </div>
+          <div className="flex gap-4">
+            <button
+              disabled={!attackData}
+              onClick={trigger}
+              className={`inline-flex items-center gap-2 justify-center cursor-pointer 
+                          bg-neutral-900 border-emerald-600 border-2 rounded-xl px-2 py-2 text-neutral-200
+                          ${
+                            !attackData ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+            >
+              Trigger <CloudLightning />
+            </button>
+            <Link href={`/dashboard/tabs/report/${attackData?.attack_id}`}>
+              <button className="inline-flex items-center gap-2 justify-center bg-emerald-900 border-emerald-600 border-2 rounded-xl px-2 py-2 text-neutral-200">
+                See Report <File />
+              </button>
+            </Link>
+          </div>
         </div>
-        <div>
-          <div className="pt-8">
-            <div className="border border-zinc-700 rounded-lg bg-neutral-900 shadow-sm">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-b border-gray-700">
-                <Link
-                  href="#"
-                  className="flex items-center gap-2 border border-gray-600 text-gray-300 px-4 py-2 rounded-md text-sm hover:bg-gray-700 hover:text-white transition-colors duration-200"
-                >
-                  All Logs <ChevronDown size={16} />
-                </Link>
-                <button
-                  className="flex items-center border border-gray-600 text-gray-300 px-3 py-2 rounded-md hover:bg-gray-700 hover:text-white transition-colors duration-200"
-                  aria-label="More options"
-                >
-                  <EllipsisVertical size={20} />
-                </button>
-              </div>
 
-              <div className="h-96 overflow-y-auto custom-scrollbar custom-scrollbar-button p-5 bg-neutral-950 rounded-b-lg">
-                <pre className="font-mono text-sm">
-                  {logs.map((log: LogEntry, idx: number) => {
-                    let colorClass = "";
-                    let indicatorBg = "";
-                    let indicatorText = "";
-                    let indicatorChar = "";
+        <div className="pt-8 pb-20">
+          <div className="border border-zinc-700 rounded-lg bg-neutral-900 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-b border-gray-700">
+              <Link
+                href="#"
+                className="flex items-center gap-2 border border-gray-600 text-gray-300 px-4 py-2 rounded-md text-sm hover:bg-gray-700 hover:text-white transition-colors duration-200"
+              >
+                All Logs <ChevronDown size={16} />
+              </Link>
+              <button
+                className="flex items-center border border-gray-600 text-gray-300 px-3 py-2 rounded-md hover:bg-gray-700 hover:text-white transition-colors duration-200"
+                aria-label="More options"
+              >
+                <EllipsisVertical size={20} />
+              </button>
+            </div>
 
-                    switch (log.info) {
-                      case "success":
-                        colorClass = "text-green-400";
-                        indicatorBg = "bg-green-600";
-                        indicatorText = "text-green-100";
-                        indicatorChar = "S";
-                        break;
-                      case "error":
-                        colorClass = "text-red-400";
-                        indicatorBg = "bg-red-600";
-                        indicatorText = "text-red-100";
-                        indicatorChar = "E";
-                        break;
-                      case "warn":
-                        colorClass = "text-yellow-400";
-                        indicatorBg = "bg-yellow-600";
-                        indicatorText = "text-yellow-100";
-                        indicatorChar = "W";
-                        break;
-                      case "info":
-                      default:
-                        colorClass = "text-blue-400";
-                        indicatorBg = "bg-blue-600";
-                        indicatorText = "text-blue-100";
-                        indicatorChar = "I";
-                        break;
-                    }
+            <div className="flex justify-end px-5 pt-2">
+              <button
+                onClick={scrollToBottom}
+                className="flex items-center gap-1 text-sm text-sky-400 border border-sky-600 px-3 py-1 rounded hover:bg-sky-800 transition"
+              >
+                Scroll to Latest <ChevronDown size={16} />
+              </button>
+            </div>
 
-                    return (
-                      <div key={idx} className="flex items-baseline gap-3 mb-1">
-                        <span className="text-gray-500 text-xs flex-shrink-0">
-                          {log.timestamp}
-                        </span>
-                        <span
-                          className={`w-4 h-4 flex items-center justify-center text-xs font-bold rounded-full flex-shrink-0 ${indicatorBg} ${indicatorText}`}
-                          title={log.info.toUpperCase()}
-                        >
-                          {indicatorChar}
-                        </span>
-                        <span className={`${colorClass} whitespace-pre-wrap`}>
-                          {log.message}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </pre>
-              </div>
+            <div className="h-96 overflow-y-auto custom-scrollbar custom-scrollbar-button p-5 bg-neutral-950 rounded-b-lg">
+              <pre className="font-mono text-sm">
+                {logs.map((log: LogEntry, idx: number) => {
+                  let colorClass = "";
+                  let indicatorBg = "";
+                  let indicatorText = "";
+                  let indicatorChar = "";
+
+                  switch (log.info) {
+                    case "success":
+                      colorClass = "text-green-400";
+                      indicatorBg = "bg-green-600";
+                      indicatorText = "text-green-100";
+                      indicatorChar = "S";
+                      break;
+                    case "error":
+                      colorClass = "text-red-400";
+                      indicatorBg = "bg-red-600";
+                      indicatorText = "text-red-100";
+                      indicatorChar = "E";
+                      break;
+                    case "warn":
+                      colorClass = "text-yellow-400";
+                      indicatorBg = "bg-yellow-600";
+                      indicatorText = "text-yellow-100";
+                      indicatorChar = "W";
+                      break;
+                    case "info":
+                    default:
+                      colorClass = "text-blue-400";
+                      indicatorBg = "bg-blue-600";
+                      indicatorText = "text-blue-100";
+                      indicatorChar = "I";
+                      break;
+                  }
+
+                  return (
+                    <div key={idx} className="flex items-baseline gap-3 mb-1">
+                      <span className="text-gray-500 text-xs flex-shrink-0">
+                        {log.timestamp}
+                      </span>
+                      <span
+                        className={`w-4 h-4 flex items-center justify-center text-xs font-bold rounded-full flex-shrink-0 ${indicatorBg} ${indicatorText}`}
+                        title={log.info.toUpperCase()}
+                      >
+                        {indicatorChar}
+                      </span>
+                      <span className={`${colorClass} whitespace-pre-wrap`}>
+                        {log.message}
+                      </span>
+                    </div>
+                  );
+                })}
+                <div ref={logsEndRef} />
+              </pre>
             </div>
           </div>
         </div>

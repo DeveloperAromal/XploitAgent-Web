@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import {
@@ -9,8 +9,6 @@ import {
   Trash2,
   CalendarClock,
   Target,
-  Search,
-  Axis3D,
   ArrowUpRightFromSquare,
 } from "lucide-react";
 

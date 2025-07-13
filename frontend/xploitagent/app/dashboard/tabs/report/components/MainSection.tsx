@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { History, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import clsx from "clsx";
+
 export default function MainSection() {
   const [attackId, setAttackId] = useState<string>("");
   const [report, setReport] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [summaryLoading, setSummaryLoading] = useState<boolean>(false);
 
   const BASE_URL = "http://localhost:4000";
 
@@ -47,22 +50,79 @@ export default function MainSection() {
     fetchReport();
   }, [attackId]);
 
+  // 🧠 Handle summary + speech
+  const handleSummary = async () => {
+    if (!report) return;
+
+    setSummaryLoading(true);
+
+    try {
+      const res = await axios.post(`${BASE_URL}/api/v1/summary`, { report });
+      const summary = res.data?.summary || "No summary returned.";
+
+      // 🔊 Send to ElevenLabs TTS
+      const speechRes = await fetch("/api/speech", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: summary, voice_id: "Rachel" }),
+      });
+
+      if (speechRes.ok) {
+        const blob = await speechRes.blob();
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+
+        // 🧼 Stop gradient when audio ends
+        audio.onended = () => {
+          setSummaryLoading(false);
+        };
+
+        audio.play();
+      } else {
+        console.error("Speech generation failed.");
+        setSummaryLoading(false);
+      }
+    } catch (err) {
+      console.error("Error during summary or speech:", err);
+      setSummaryLoading(false);
+    }
+  };
+
   return (
     <section className="relative min-h-screen bg-neutral-950 text-white font-inter p-6 flex justify-center items-start py-8 overflow-hidden">
-      <div
-        className="absolute inset-0 z-20 animate-wave bg-[length:400%_400%] bg-gradient-to-tr from-green-300/10 via-emerald-400/20 to-emerald-500/50"
-        style={{
-          animation: "wave 8s ease-in-out infinite",
-          backgroundSize: "400% 400%",
-        }}
-      />
+      {/* ✅ Gradient only while AI is reading */}
+      {summaryLoading && (
+        <div
+          className="absolute inset-0 z-20 animate-wave bg-[length:400%_400%] bg-gradient-to-tr from-green-300/10 via-emerald-400/20 to-emerald-500/50 pointer-events-none"
+          style={{
+            animation: "wave 8s ease-in-out infinite",
+            backgroundSize: "400% 400%",
+          }}
+        />
+      )}
 
+      {/* 📦 Summary Button */}
       <div className="fixed bottom-10 right-10 z-60">
-        <button className="bg-gradient-to-tl from-emerald-600 to-emerald-700 px-4 py-2 rounded-2xl flex gap-2 items-center cursor-pointer text-white">
-          Want Summary <Sparkles />
+        <button
+          onClick={handleSummary}
+          className={clsx(
+            "relative px-5 py-2 rounded-2xl flex gap-2 items-center cursor-pointer text-white transition-all duration-300 ease-in-out",
+            {
+              "bg-gradient-to-tl from-emerald-600 to-emerald-700":
+                !summaryLoading,
+              "bg-emerald-900 border border-emerald-400 shadow-inner":
+                summaryLoading,
+              "opacity-60 cursor-not-allowed": summaryLoading,
+            }
+          )}
+          disabled={summaryLoading}
+        >
+          {summaryLoading ? "Speaking..." : "Want Summary"}
+          <Sparkles size={18} />
         </button>
       </div>
 
+      {/* 📄 Report Viewer */}
       <div className="w-full z-10">
         {loading ? (
           <div className="text-center text-zinc-200 text-lg animate-pulse">

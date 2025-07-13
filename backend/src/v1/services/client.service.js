@@ -6,11 +6,20 @@ export async function createClient(
   phonenumber,
   company_name,
   is_verified,
-  password
+  hashpass
 ) {
   const { data, error } = await supabase
     .from("clients")
-    .insert([{ name, email, phonenumber, company_name, is_verified, password }])
+    .insert([
+      {
+        name,
+        email,
+        phonenumber,
+        company_name,
+        is_verified,
+        password: hashpass,
+      },
+    ])
     .select("*");
   if (error) throw error;
   return data;
@@ -69,6 +78,3 @@ export async function attackData(attack_id) {
   if (error) throw error;
   return data;
 }
-
-
-
