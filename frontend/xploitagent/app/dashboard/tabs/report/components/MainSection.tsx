@@ -11,9 +11,12 @@ export default function MainSection() {
   const [report, setReport] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [summaryLoading, setSummaryLoading] = useState<boolean>(false);
+  // We no longer need hasPlayedSummary if we're only playing on button click
+  // const [hasPlayedSummary, setHasPlayedSummary] = useState<boolean>(false);
 
   const BASE_URL = "http://localhost:4000";
 
+  // Effect to get attackId from URL (remains the same)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const pathSegments = window.location.pathname.split("/");
@@ -29,6 +32,7 @@ export default function MainSection() {
     }
   }, []);
 
+  // Effect to fetch report when attackId changes (remains the same)
   useEffect(() => {
     const fetchReport = async () => {
       if (!attackId) return;
@@ -39,9 +43,11 @@ export default function MainSection() {
         );
         const fetchedReport = res.data[0]?.report || "No report found.";
         setReport(fetchedReport);
+        // setHasPlayedSummary(false); // No longer needed
       } catch (error) {
         console.error("Error fetching report:", error);
         setReport("Error fetching report.");
+        // setHasPlayedSummary(true); // No longer needed
       } finally {
         setLoading(false);
       }
@@ -50,21 +56,39 @@ export default function MainSection() {
     fetchReport();
   }, [attackId]);
 
-  // 🧠 Handle summary + speech
+  // THIS useEffect IS REMOVED:
+  // useEffect(() => {
+  //   if (report && report.trim() !== "" && !loading && !hasPlayedSummary) {
+  //     handleSummary();
+  //   }
+  // }, [report, loading, hasPlayedSummary]);
+
   const handleSummary = async () => {
-    if (!report) return;
+    // Prevent re-triggering if already loading or no report
+    if (!report || summaryLoading) return;
 
     setSummaryLoading(true);
+    // setHasPlayedSummary(true); // No longer needed here
 
     try {
-      const res = await axios.post(`${BASE_URL}/api/v1/summary`, { report });
+      // 1. Get Summary Text
+      const res = await axios.post(`${BASE_URL}/api/v1/summarize`, { report });
       const summary = res.data?.summary || "No summary returned.";
 
-      // 🔊 Send to ElevenLabs TTS
+      if (!summary || summary.trim() === "") {
+        console.warn("No summary text received for speech.");
+        setSummaryLoading(false);
+        return;
+      }
+
+      // 2. Get Speech Audio
       const speechRes = await fetch("/api/speech", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: summary, voice_id: "Rachel" }),
+        body: JSON.stringify({
+          text: summary,
+          voice_id: "nPczCjzI2devNBz1zQrb", // Your verified voice_id
+        }),
       });
 
       if (speechRes.ok) {
@@ -72,39 +96,55 @@ export default function MainSection() {
         const audioUrl = URL.createObjectURL(blob);
         const audio = new Audio(audioUrl);
 
-        // 🧼 Stop gradient when audio ends
         audio.onended = () => {
           setSummaryLoading(false);
+          URL.revokeObjectURL(audioUrl); // Good practice to clean up object URL
+        };
+        audio.onerror = (e) => {
+          console.error("Audio playback error:", e);
+          setSummaryLoading(false);
+          URL.revokeObjectURL(audioUrl); // Clean up on error too
         };
 
-        audio.play();
+        // Attempt to play. Handle potential user gesture requirement.
+        try {
+          await audio.play();
+        } catch (playError: any) {
+          console.warn(
+            "Audio auto-play prevented by browser (user gesture required).",
+            playError
+          );
+          // If auto-play fails, the button will reset when `summaryLoading` becomes false.
+          // You could optionally store audioUrl in state to offer a manual play button if this happens.
+          setSummaryLoading(false); // Stop loading animation if play fails due to browser policy
+        }
       } else {
-        console.error("Speech generation failed.");
+        const errorData = await speechRes.json();
+        console.error("Speech generation failed:", speechRes.status, errorData);
         setSummaryLoading(false);
       }
     } catch (err) {
-      console.error("Error during summary or speech:", err);
+      console.error("Error during summary or speech generation:", err);
       setSummaryLoading(false);
     }
   };
 
   return (
     <section className="relative min-h-screen bg-neutral-950 text-white font-inter p-6 flex justify-center items-start py-8 overflow-hidden">
-      {/* ✅ Gradient only while AI is reading */}
       {summaryLoading && (
         <div
-          className="absolute inset-0 z-20 animate-wave bg-[length:400%_400%] bg-gradient-to-tr from-green-300/10 via-emerald-400/20 to-emerald-500/50 pointer-events-none"
+          className="absolute inset-0 z-20 pointer-events-none rounded-md bg-gradient-to-tr from-gray-300/20 via-gray-400/30 to-gray-500/20 animate-wave"
           style={{
-            animation: "wave 8s ease-in-out infinite",
+            animation: "wave 3s ease-in-out infinite",
             backgroundSize: "400% 400%",
+            opacity: 1,
           }}
         />
       )}
 
-      {/* 📦 Summary Button */}
       <div className="fixed bottom-10 right-10 z-60">
         <button
-          onClick={handleSummary}
+          onClick={handleSummary} // This is the ONLY place handleSummary is called
           className={clsx(
             "relative px-5 py-2 rounded-2xl flex gap-2 items-center cursor-pointer text-white transition-all duration-300 ease-in-out",
             {
@@ -122,7 +162,6 @@ export default function MainSection() {
         </button>
       </div>
 
-      {/* 📄 Report Viewer */}
       <div className="w-full z-10">
         {loading ? (
           <div className="text-center text-zinc-200 text-lg animate-pulse">
@@ -130,7 +169,7 @@ export default function MainSection() {
           </div>
         ) : report ? (
           <div className="bg-neutral-900 border border-zinc-700 p-8 rounded-xl shadow-lg prose prose-invert max-w-none prose-headings:mt-6 prose-p:my-3 prose-strong:font-semibold prose-li:my-2">
-            <h2 className="text-2xl font-semibold mb-4">Scan Report</h2>
+            <h2 className="2xl font-semibold mb-4">Scan Report</h2>
             <ReactMarkdown>{report}</ReactMarkdown>
           </div>
         ) : (

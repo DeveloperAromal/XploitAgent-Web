@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.6.0",
     "@fontsource/fira-code": "^5.2.6",
     "axios": "^1.10.0",
     "framer-motion": "^12.23.0",
