@@ -23,6 +23,7 @@ export default function Home() {
       <VidSec />
       {/*<VideoSection /> */}
       <WhoThisIsFor /> 
+      
       {/* <WhyChooseEyeShield /> */}
       {/* <PainPoint /> */}
       {/* <Solution /> */}

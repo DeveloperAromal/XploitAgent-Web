@@ -7,6 +7,7 @@ import clientRoute from "./routes/client.route.js";
 import authRoute from "./routes/auth.route.js";
 import vulnerabilityRoute from "./routes/vulnerabilities.route.js";
 import searchRoute from "./routes/search.route.js";
+import exploitRoutes from "./routes/exploit.route.js";
 
 dotenv.config();
 
@@ -21,9 +22,13 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", authRoute);
 app.use("/api/v1", contactRoute);
+
+app.use("/api/v1", countryRoutes)
 app.use("/api/v1", countryRoutes);
 app.use("/api/v1", clientRoute);
 app.use("/api/v1", vulnerabilityRoute);
 app.use("/api/v1", searchRoute);
+
+app.use("/api/exploit", exploitRoutes);
 
 export default app;
