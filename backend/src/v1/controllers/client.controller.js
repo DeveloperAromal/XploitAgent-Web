@@ -27,11 +27,11 @@ export const insertClient = async (req, res) => {
 
     res.status(201).json(client);
 
-    const loginLink = `https://dashboard.xploitagent.com/dashboard/${client.client_id}`;
+    const loginLink = `http://localhost:3000/auth/login${client.client_id}`;
 
     await sendCredentialsEmail(
       email,
-      "🔐 Your XploitAgent Credentials",
+      "Your XploitAgent Credentials",
       email,
       password,
       loginLink,

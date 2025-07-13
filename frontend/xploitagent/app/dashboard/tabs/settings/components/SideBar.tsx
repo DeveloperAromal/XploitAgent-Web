@@ -48,7 +48,7 @@ export default function Sidebar() {
     },
     {
       tabName: "Reports & Analytics",
-      path: "/dashboard/report",
+      path: "/dashboard/reports",
       icon: FileText,
       section: "Analysis",
     },
@@ -77,13 +77,13 @@ export default function Sidebar() {
     { tabName: "Team Management", path: "/dashboard/team", icon: Users },
     {
       tabName: "Integrations",
-      path: "/dashboard/tabs/settings",
+      path: "/dashboard/integrations",
       icon: Settings,
     },
   ];
 
   const handlePath = (path: string) => {
-    setIsOpen(false); // close sidebar on mobile
+    setIsOpen(false);
     window.open(path, "_self");
   };
 
