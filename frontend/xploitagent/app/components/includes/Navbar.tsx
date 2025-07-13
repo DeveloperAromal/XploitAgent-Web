@@ -35,7 +35,7 @@ export default function Navbar() {
                   <li>Resources</li>
                 </Link>
                 <Link
-                  href="#"
+                  href="/pricing"
                   className="hover:bg-zinc-200/5 rounded-md px-4 py-2 text-white"
                 >
                   <li>Pricing</li>
