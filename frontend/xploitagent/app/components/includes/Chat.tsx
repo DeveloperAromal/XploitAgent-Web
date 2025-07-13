@@ -22,9 +22,7 @@ export default function Chat() {
 
     try {
       const res = await axios.get(
-        `https://studbud-backend-server.onrender.com/api/v1/post/personalquestions/${encodeURIComponent(
-          question
-        )}`
+        `http://localhost:4000/api/v1/bot/${encodeURIComponent(question)}`
       );
 
       const botReply = res.data?.answer || "🤖 Hmm, couldn't fetch an answer.";
