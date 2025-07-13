@@ -27,7 +27,7 @@ export const insertClient = async (req, res) => {
 
     res.status(201).json(client);
 
-    const loginLink = `http://localhost:3000/auth/login${client.client_id}`;
+    const loginLink = `http://localhost:3000/auth/login/${client[0]?.client_id}`;
 
     await sendCredentialsEmail(
       email,

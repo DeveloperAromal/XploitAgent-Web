@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 dotenv.config();
-import fetch from "node-fetch";
 
 const auth_key = process.env.GEMINI_API_KEY;
 
