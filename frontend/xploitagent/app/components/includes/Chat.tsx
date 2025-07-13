@@ -49,7 +49,7 @@ export default function Chat() {
           {/* Header */}
           <div className="bg-gradient-to-r from-sky-600 to-indigo-600 text-white px-5 py-3 flex justify-between items-center">
             <h2 className="font-semibold text-lg flex items-center gap-2">
-              StudBud AI
+              XploitAgent AI
               <span className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
             </h2>
             <button
@@ -65,10 +65,10 @@ export default function Chat() {
             {messages.length === 0 ? (
               <div className="text-center mt-10">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-400 via-purple-400 to-pink-500 text-transparent bg-clip-text">
-                  Hey there! Ready to level up? 🚀
+                  Wanna know about cybersecurity ?
                 </h1>
                 <p className="text-gray-400 mt-2">
-                  Ask anything related to your studies, and I’ll help you out!
+                  Ask anything related to cybersecurity, and XploitAgent
                 </p>
               </div>
             ) : (
