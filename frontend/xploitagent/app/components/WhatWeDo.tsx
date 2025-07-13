@@ -35,7 +35,7 @@ export default function WhatMakesItUnique() {
 
   return (
     <section className="flex items-center justify-center py-20 px-10 text-white">
-      <div className="relative w-full max-w-7xl h-[85vh] rounded-3xl overflow-hidden">
+      <div className="relative w-full h-[85vh] rounded-3xl overflow-hidden">
         <div className="absolute inset-0 ai-bg-2 z-0 rounded-3xl" />
         <div className="relative z-10 flex flex-col justify-between h-full bg-black/50 rounded-3xl">
           <div className="p-12">
@@ -109,7 +109,7 @@ export default function WhatMakesItUnique() {
                     </div>
                   );
                 })}
-                <div ref={logEndRef} />
+                <div />
               </div>
             </div>
           </div>

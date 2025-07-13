@@ -2,7 +2,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SendHorizonal, Bot, User } from "lucide-react";
+import Image from "next/image";
+import { SendHorizonal, User } from "lucide-react";
 import axios from "axios";
 import clsx from "clsx";
 
@@ -92,11 +93,11 @@ export default function StudBudChat() {
       >
         {messages.length === 0 ? (
           <div className="text-center animate-slide-up">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
-              Hey {name}, ready to level up your brain? 🚀
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 text-transparent bg-clip-text">
+              Hey ready to level up in Cybersecurity? 🚀
             </h1>
-            <p className="text-gray-700 text-lg">
-              Ask me anything — I’m your AI study buddy!
+            <p className="text-neutral-500 text-lg">
+              Ask me anything — I’m XploitAi !
             </p>
           </div>
         ) : (
@@ -110,15 +111,20 @@ export default function StudBudChat() {
               )}
             >
               {msg.role === "bot" && (
-                <div className="flex-shrink-0">
-                  <Bot className="w-8 h-8 text-indigo-500" />
+                <div className="flex-shrink-0 mt-3.5">
+                  <Image
+                    src="/assets/logo.png"
+                    alt="Logo"
+                    width={25}
+                    height={25}
+                  />
                 </div>
               )}
               <div
                 className={clsx(
-                  "rounded-2xl p-4 max-w-[70%] shadow-lg transition-all duration-300",
+                  "rounded-2xl p-4 shadow-lg transition-all duration-300",
                   msg.role === "user"
-                    ? "bg-indigo-500 text-white"
+                    ? "bg-emerald-500 text-white"
                     : "bg-white text-gray-800 border border-gray-200"
                 )}
               >
@@ -126,7 +132,7 @@ export default function StudBudChat() {
               </div>
               {msg.role === "user" && (
                 <div className="flex-shrink-0">
-                  <User className="w-8 h-8 text-indigo-500" />
+                  <User className="w-8 h-8 text-emerald-500" />
                 </div>
               )}
             </div>
@@ -134,8 +140,8 @@ export default function StudBudChat() {
         )}
 
         {isTyping && (
-          <div className="flex items-center gap-3 animate-slide-up">
-            <Bot className="w-8 h-8 text-indigo-500" />
+          <div className="flex items-center mt-10 gap-3 animate-slide-up">
+            <Image src="/assets/logo.png" alt="Logo" width={25} height={25} />
             <div className="bg-white p-4 rounded-2xl shadow-lg border border-gray-200">
               <div className="flex space-x-2">
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -147,26 +153,24 @@ export default function StudBudChat() {
         )}
       </main>
 
-      {/* Input Section */}
       <footer className="p-4 backdrop-blur-md border-t-2 border-stone-900">
         <div className="max-w-5xl mx-auto flex items-center gap-3">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex-grow p-3 rounded-full border-2 border-gray-600 bg-neutral-950 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-300"
+            className="flex-grow p-3 rounded-full border-2 border-gray-600 bg-neutral-950 placeholder-neutral-500 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 transition duration-300"
             placeholder="Ask something smart..."
           />
           <button
             onClick={handleSend}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white p-3 rounded-full transition duration-300 flex items-center justify-center"
+            className=" bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 hover:bg-emerald-600 text-white p-3 rounded-full transition duration-300 flex items-center justify-center"
           >
             <SendHorizonal size={20} />
           </button>
         </div>
       </footer>
 
-      {/* Animations */}
       <style jsx>{`
         @keyframes slide-up {
           from {

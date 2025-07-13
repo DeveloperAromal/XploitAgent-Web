@@ -1,3 +1,5 @@
+import AboutProduct from "./components/AboutProduct";
+import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import Chat from "./components/includes/Chat";
 import Navbar from "./components/includes/Navbar";
@@ -18,6 +20,8 @@ export default function Home() {
       <WhoThisIsFor />
       <WhatMakesItUnique />
       <WhatWeDo />
+      <AboutProduct />
+      <Footer />
     </main>
   );
 }
