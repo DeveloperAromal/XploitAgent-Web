@@ -29,9 +29,9 @@ export default function ViewDetails() {
   const logsEndRef = useRef<HTMLDivElement | null>(null);
   const BASE_URL = "http://localhost:4000";
 
-  const scrollToBottom = () => {
-    logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // const scrollToBottom = () => {
+  //   logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // };
 
   useEffect(() => {
     const validate = async () => {
@@ -142,9 +142,9 @@ export default function ViewDetails() {
     }
   }, [attackId]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [logs]);
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [logs]);
 
   const trigger = async () => {
     if (
@@ -231,12 +231,14 @@ export default function ViewDetails() {
             </div>
 
             <div className="flex justify-end px-5 pt-2">
-              <button
-                onClick={scrollToBottom}
-                className="flex items-center gap-1 text-sm text-sky-400 border border-sky-600 px-3 py-1 rounded hover:bg-sky-800 transition"
-              >
-                Scroll to Latest <ChevronDown size={16} />
-              </button>
+              <Link href="#bottom">
+                <button
+                  // onClick={scrollToBottom}
+                  className="flex items-center gap-1 text-sm text-sky-400 border border-sky-600 px-3 py-1 rounded hover:bg-sky-800 transition"
+                >
+                  Scroll to Latest <ChevronDown size={16} />
+                </button>
+              </Link>
             </div>
 
             <div className="h-96 overflow-y-auto custom-scrollbar custom-scrollbar-button p-5 bg-neutral-950 rounded-b-lg">
@@ -292,7 +294,7 @@ export default function ViewDetails() {
                     </div>
                   );
                 })}
-                <div ref={logsEndRef} />
+                <div ref={logsEndRef} id="bottom" />
               </pre>
             </div>
           </div>

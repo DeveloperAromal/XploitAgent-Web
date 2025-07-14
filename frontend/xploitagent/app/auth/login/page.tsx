@@ -1,16 +1,42 @@
 "use client";
 
-import { User, Lock } from "lucide-react";
+import { User, Lock, Quote } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 
-// Define the type for the JWT payload
 type jwtPayload = {
-  exp?: number; // Expiration timestamp
-  [key: string]: any; // Allow other properties
+  exp?: number;
+  [key: string]: any;
 };
+
+const testimonials = [
+  {
+    quote:
+      "XploitAgent saved us from a major security breach. Their vigilance is unmatched!",
+    name: "Alice Johnson",
+    company: "CyberTech Solutions",
+  },
+  {
+    quote:
+      "The team provided excellent support and tailored solutions to our cybersecurity needs.",
+    name: "Mark Spencer",
+    company: "SecureWave Inc.",
+  },
+  {
+    quote:
+      "Thanks to XploitAgent, our infrastructure is more secure than ever. Highly recommended!",
+    name: "Linda Park",
+    company: "DataShield Corp.",
+  },
+  {
+    quote:
+      "Professional, reliable, and efficient — the perfect cybersecurity partner.",
+    name: "David Lee",
+    company: "NetGuard Ltd.",
+  },
+];
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -19,9 +45,24 @@ export default function Login() {
   });
   const router = useRouter();
 
-  // Define the base URL for API requests
   const BASE_URL = process.env.APP_BASE_URL || "http://localhost:4000";
-  // Handle input field changes
+
+  // Testimonial state for current index and fade animation
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+        setFade(true);
+      }, 500); // Fade duration 500ms
+    }, 5000); // Show each testimonial for 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -30,49 +71,46 @@ export default function Login() {
     }));
   };
 
-  // Handle login form submission
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
     try {
       const { data } = await axios.post(
-        `${BASE_URL}/api/v1/admin/login`, // Use the defined BASE_URL
+        `${BASE_URL}/api/v1/admin/login`,
         formData
       );
 
       const token = data.token;
-      localStorage.setItem("token", token); // Store the token
+      localStorage.setItem("token", token);
 
       if (token) {
-        router.push("/dashboard"); // Redirect to dashboard on successful login
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Login failed:", error);
-      // TODO: Implement user-friendly error message display (e.g., a toast notification)
     }
   };
 
-  // Effect to check for existing token and redirect if valid
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
         const { exp } = jwtDecode<jwtPayload>(token);
-        // Check if token exists and is not expired
         if (exp && Date.now() / 1000 < exp) {
-          router.push("/dashboard"); // Redirect if token is valid
+          router.push("/dashboard");
         }
       } catch (e) {
         console.error("Error decoding token or token invalid:", e);
-        // Optionally clear invalid token from local storage
         localStorage.removeItem("token");
       }
     }
-  }, [router]); // Add router to dependency array
+  }, [router]);
+
+  const { quote, name, company } = testimonials[currentIndex];
 
   return (
     <section className="h-dvh font-inter bg-black text-white">
       <div className="flex min-h-screen">
-        {/* Left Side: Login Form */}
+        {/* Left side: Login Form */}
         <div className="w-3/4 flex items-center justify-center px-10">
           <div className="w-full max-w-md">
             <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-8 leading-tight">
@@ -125,9 +163,35 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Right Side: Additional Content or Image */}
-        <div className="w-3/2 bg-neutral-800 flex items-center justify-center">
-          <p className="text-neutral-400 text-lg">Right Side Content</p>
+        {/* Right side: Testimonials */}
+        <div className="w-3/2 bg-neutral-950 flex flex-col items-center justify-center h-screen p-10 relative text-center px-16">
+          <div>
+            <Quote className="w-20 h-20 text-neutral-600 relative -left-20" />
+            <div>
+              <p
+                className={`text-3xl md:text-2xl italic max-w-xl mx-auto transition-opacity duration-500 ${
+                  fade ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                &quot;{quote}&quot;
+              </p>
+              <div
+                className={`mt-6 text-2xl font-semibold transition-opacity duration-500 ${
+                  fade ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                {name}
+              </div>
+              <div
+                className={`text-sm text-neutral-500 mb-10 transition-opacity duration-500 ${
+                  fade ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                {company}
+              </div>
+            </div>
+            <Quote className="w-20 h-20 text-neutral-600 relative -top-40 left-[580px]" />
+          </div>
         </div>
       </div>
     </section>

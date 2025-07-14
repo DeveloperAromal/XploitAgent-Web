@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.6.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fontsource/fira-code": "^5.2.6",
+    "@mui/material": "^7.2.0",
     "axios": "^1.10.0",
+    "emotion": "^11.0.0",
     "framer-motion": "^12.23.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.525.0",

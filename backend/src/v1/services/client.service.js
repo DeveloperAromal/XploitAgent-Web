@@ -25,11 +25,13 @@ export async function createClient(
   return data;
 }
 
-export async function scanData(report, target) {
+export async function scanData(report, target, attack_id) {
   const { data, error } = await supabase
-    .from("reports")
-    .insert([{ report, target }])
+    .from("report")
+    .update({ report, target })
+    .eq("attack_id", attack_id)
     .select("*");
+
   if (error) throw error;
   return data;
 }

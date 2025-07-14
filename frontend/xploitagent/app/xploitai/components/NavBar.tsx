@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -9,10 +9,10 @@ export default function Navbar() {
       <div className="absolute inset-x-0 top-full h-1 bg-linear-to-b from-black to-transparent md:h-14 lg:h-18 z-10" />
 
       <div>
-        <nav className="px-10 flex justify-between">
+        <nav className="px-10 flex justify-center items-center">
           <div className="flex items-center gap-10">
             <div className="flex items-center justify-center">
-              <Link href="#" className="relative mt-1">
+              {/* <Link href="#" className="relative mt-1">
                 <h1>
                   <Image
                     src="/assets/logo.png"
@@ -21,7 +21,7 @@ export default function Navbar() {
                     height={240}
                   />
                 </h1>
-              </Link>
+              </Link> */}
             </div>
             <div>
               <ul className="flex gap-[3rem] h-auto">
@@ -29,13 +29,13 @@ export default function Navbar() {
                   href="#"
                   className="hover:bg-zinc-200/5 rounded-md px-4 py-2 text-white"
                 >
-                  <li>Features</li>
+                  <li>Api</li>
                 </Link>
                 <Link
                   href="#"
                   className="hover:bg-zinc-200/5 rounded-md px-4 py-2 text-white"
                 >
-                  <li>Resources</li>
+                  <li>Careers</li>
                 </Link>
                 <Link
                   href="/pricing"
@@ -51,10 +51,6 @@ export default function Navbar() {
                 </Link>
               </ul>
             </div>
-          </div>
-
-          <div>
-            <Link href="/contact">Contact sales</Link>
           </div>
         </nav>
       </div>

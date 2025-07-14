@@ -6,10 +6,15 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "api.dicebear.com",
-        pathname: "/**", // Match all paths
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ddl0zi5h2jlue.cloudfront.net",
+        pathname: "/**", 
       },
     ],
-    dangerouslyAllowSVG: true, // Only enable if you're using SVG avatars
+    dangerouslyAllowSVG: true,
   },
 };
 

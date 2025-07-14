@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { SendHorizonal, User } from "lucide-react";
+import { SendHorizonal } from "lucide-react";
 import axios from "axios";
 import clsx from "clsx";
 
@@ -89,7 +89,10 @@ export default function StudBudChat() {
     <div className="h-screen w-full flex flex-col text-gray-900">
       <main
         ref={chatRef}
-        className="flex-1 overflow-y-auto p-6 space-y-4 max-w-6xl mx-auto w-full flex flex-col items-center justify-center"
+        className={clsx(
+          "flex-1 overflow-y-auto p-6 space-y-4 max-w-6xl mx-auto w-full flex flex-col no-scroll-bar",
+          messages.length === 0 ? "items-center justify-center" : ""
+        )}
       >
         {messages.length === 0 ? (
           <div className="text-center animate-slide-up">
@@ -124,15 +127,15 @@ export default function StudBudChat() {
                 className={clsx(
                   "rounded-2xl p-4 shadow-lg transition-all duration-300",
                   msg.role === "user"
-                    ? "bg-emerald-500 text-white"
+                    ? "bg-neutral-800 text-white"
                     : "bg-white text-gray-800 border border-gray-200"
                 )}
               >
                 <p className="text-sm md:text-base">{msg.text}</p>
               </div>
               {msg.role === "user" && (
-                <div className="flex-shrink-0">
-                  <User className="w-8 h-8 text-emerald-500" />
+                <div className="flex-shrink-0 bg-green-700 p-3 rounded-full">
+                  <p className="text-white">AR</p>{" "}
                 </div>
               )}
             </div>
@@ -140,7 +143,7 @@ export default function StudBudChat() {
         )}
 
         {isTyping && (
-          <div className="flex items-center mt-10 gap-3 animate-slide-up">
+          <div className="flex items-start mt-10 gap-3 animate-slide-up">
             <Image src="/assets/logo.png" alt="Logo" width={25} height={25} />
             <div className="bg-white p-4 rounded-2xl shadow-lg border border-gray-200">
               <div className="flex space-x-2">
@@ -171,7 +174,7 @@ export default function StudBudChat() {
         </div>
       </footer>
 
-      <style jsx>{`
+      {/* <style jsx>{`
         @keyframes slide-up {
           from {
             opacity: 0;
@@ -194,7 +197,7 @@ export default function StudBudChat() {
         .delay-200 {
           animation-delay: 0.2s;
         }
-      `}</style>
+      `}</style> */}
     </div>
   );
 }

@@ -2,15 +2,9 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  ShieldAlert,
-  Target,
-  Clock,
-  Zap,
-  Tag,
-  Info,
-  CalendarDays,
-} from "lucide-react"; // Added more icons
+import { SquareArrowOutUpRight, Target } from "lucide-react";
+import Link from "next/link";
+import CustomCircularProgress from "./Progress";
 
 type Vulnerability = {
   id: number;
@@ -31,6 +25,7 @@ type Vulnerability = {
 export default function VulnerabilityDetails() {
   const [clientId, setClientId] = useState("");
   const [data, setData] = useState<Vulnerability | null>(null);
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
 
   const BASE_URL = "http://localhost:4000";
@@ -71,6 +66,21 @@ export default function VulnerabilityDetails() {
     fetchDetails();
   }, [clientId]);
 
+  useEffect(() => {
+    const fetchClientName = async () => {
+      if (!clientId) return;
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/api/v1/get/client-by-id/${clientId}`
+        );
+        setName(res.data?.[0]?.name || "Unknown");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchClientName();
+  }, [clientId]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-neutral-950 text-white text-lg">
@@ -91,27 +101,105 @@ export default function VulnerabilityDetails() {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "Critical":
-        return "bg-red-600 shadow-red-500/50";
+        return "bg-red-600 border-red-300 shadow-red-500/50";
       case "High":
-        return "bg-orange-500 shadow-orange-500/50";
+        return "bg-orange-500 border-orange-300 shadow-orange-500/50";
       case "Medium":
-        return "bg-yellow-500 text-black shadow-yellow-500/50";
+        return "bg-yellow-500 border-yellow-300 text-black shadow-yellow-500/50";
       case "Low":
-        return "bg-green-600 shadow-green-500/50";
+        return "bg-green-600 border-green-300 shadow-green-500/50";
       default:
-        return "bg-gray-500 shadow-gray-500/50";
+        return "bg-gray-500 border-gray-300 shadow-gray-500/50";
+    }
+  };
+
+  const getColorByScore = (score: number): string => {
+    if (score >= 8) {
+      return "#dc2626";
+    } else if (score >= 6) {
+      return "#f97316";
+    } else if (score >= 4) {
+      return "#eab308";
+    } else if (score >= 1) {
+      return "#16a34a";
+    } else {
+      return "#6b7280";
     }
   };
 
   return (
-    <section className="min-h-screen">
-      <div className=" p-6 sm:p-10 space-y-8">
-        <div>
-          <h1 className="text-3xl mb-4">{data.attack_name}</h1>
+    <section className="h-screen bg-neutral-950 text-white">
+      <div>
+        <div className="p-6 sm:p-10 space-y-8 flex justify-between">
           <div>
-            <h2>{data.target}</h2>
-            <h2>{new Date(data.created_at).toLocaleDateString()}</h2>
+            <h1 className="text-3xl font-bold mb-4">{data.attack_name}</h1>
+
+            <div className="bg-neutral-800 rounded-2xl border border-dashed border-emerald-800 inline-flex items-center gap-2 px-2 py-1 mb-3">
+              <Target className="w-4 h-4 text-zinc-400" />
+              <p className="text-sm text-neutral-300">
+                {name} / <span className="text-zinc-400">{data.target}</span>
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <h2 className="text-neutral-400">{data.target}</h2>
+              <Link
+                href={`${data.target}`}
+                className="flex items-center justify-center"
+              >
+                <SquareArrowOutUpRight className="w-4 h-4 text-sky-600" />
+              </Link>
+            </div>
+
+            <p className="text-sm text-neutral-600 mt-2">
+              {new Date(data.created_at).toLocaleDateString()}
+            </p>
           </div>
+
+          <div>
+            <div
+              className={`${getSeverityColor(
+                data.severity
+              )} rounded-2xl border-2 px-3 py-1 text-md`}
+            >
+              {data.severity}
+            </div>
+          </div>
+        </div>
+        <div className="flex  justify-center w-full">
+          <div className="flex gap-10">
+            <div className="flex flex-col items-center">
+              <CustomCircularProgress
+                value={data.cvss_score}
+                color={getColorByScore(data.cvss_score)}
+              />
+              <p className="mt-3 text-lg text-neutral-400">CVSS Score</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <CustomCircularProgress
+                value={data.exploitability_score}
+                color={getColorByScore(data.exploitability_score)}
+              />
+              <p className="mt-3 text-lg text-neutral-400">Exploitability</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="flex gap-4 px-10 pt-6">
+            {data.tags?.map((tag, i) => (
+              <div
+                key={i}
+                className="bg-emerald-800 rounded-2xl px-2 py-1 border-2 border-stone-700"
+              >
+                <h4>{tag}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-10 py-4">
+          <h2 className="text-2xl  text-neutral-200">Remediation</h2>
+          <p className="text-stone-400">{data.remediation}</p>
         </div>
       </div>
     </section>

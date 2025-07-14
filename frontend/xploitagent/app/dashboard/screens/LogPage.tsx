@@ -269,7 +269,7 @@ export default function LogPage() {
           </div>
 
           <div
-            ref={logContainerRef}
+            // ref={logContainerRef}
             className="h-96 overflow-y-auto custom-scrollbar custom-scrollbar-button p-5 bg-neutral-950 rounded-b-lg"
           >
             <pre className="font-mono text-sm">

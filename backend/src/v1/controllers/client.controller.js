@@ -10,21 +10,21 @@ import {
 } from "../services/client.service.js";
 import { sendCredentialsEmail } from "../utils/mail.js";
 import { generatePass } from "../utils/password_generator.js";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 export const insertClient = async (req, res) => {
   try {
     const password = generatePass(12);
-    
+
     const { name, email, phonenumber, company_name, is_verified } = req.body;
-    const hashpass = await bcrypt.hash(password, 10)
+    const hashpass = await bcrypt.hash(password, 10);
     const client = await createClient(
       name,
       email,
       phonenumber,
       company_name,
       is_verified,
-     hashpass
+      hashpass
     );
 
     res.status(201).json(client);
@@ -48,8 +48,8 @@ export const insertClient = async (req, res) => {
 
 export const scanReport = async (req, res) => {
   try {
-    const { report, target } = req.body;
-    const data = await scanData(report, target);
+    const { report, target, attack_id } = req.body;
+    const data = await scanData(report, target, attack_id);
     res.json(data);
   } catch (e) {
     console.log(e);
