@@ -74,7 +74,9 @@ export default function VulnerabilitySection() {
       setLoading(true);
       try {
         const [vulnRes, clientRes] = await Promise.all([
-          axios.get(`${BASE_URL}/api/v1/get-vulnerability/${clientId}`),
+          axios.get(
+            `${BASE_URL}/api/v1/get-vulnerability-by-client-id/${clientId}`
+          ),
           axios.get(`${BASE_URL}/api/v1/get/client-by-id/${clientId}`),
         ]);
 
@@ -189,7 +191,7 @@ export default function VulnerabilitySection() {
                 </p>
 
                 <Link
-                  href={`/dashboard/tabs/vulnerabilities/${clientId}`}
+                  href={`/dashboard/tabs/vulnerabilities/${vuln.attack_id}`}
                   className="inline-block bg-white hover:bg-zinc-200/50 text-sm font-medium text-black px-4 py-2 rounded-lg transition"
                 >
                   See more

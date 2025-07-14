@@ -23,7 +23,7 @@ type Vulnerability = {
 };
 
 export default function VulnerabilityDetails() {
-  const [clientId, setClientId] = useState("");
+  const [attackId, setAttacktId] = useState("");
   const [data, setData] = useState<Vulnerability | null>(null);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
@@ -38,14 +38,14 @@ export default function VulnerabilityDetails() {
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
       if (uuidRegex.test(lastSegment)) {
-        setClientId(lastSegment);
+        setAttacktId(lastSegment);
       }
     }
   }, []);
 
   useEffect(() => {
     const fetchDetails = async () => {
-      if (!clientId) {
+      if (!attackId) {
         setLoading(false);
         return;
       }
@@ -53,7 +53,7 @@ export default function VulnerabilityDetails() {
       setLoading(true);
       try {
         const res = await axios.get(
-          `${BASE_URL}/api/v1/get-vulnerability/${clientId}`
+          `${BASE_URL}/api/v1/get-vulnerability/${attackId}`
         );
         setData(res.data[0]);
       } catch (error) {
@@ -64,14 +64,14 @@ export default function VulnerabilityDetails() {
     };
 
     fetchDetails();
-  }, [clientId]);
+  }, [attackId]);
 
   useEffect(() => {
     const fetchClientName = async () => {
-      if (!clientId) return;
+      if (!data?.client_id) return;
       try {
         const res = await axios.get(
-          `${BASE_URL}/api/v1/get/client-by-id/${clientId}`
+          `${BASE_URL}/api/v1/get/client-by-id/${data?.client_id}`
         );
         setName(res.data?.[0]?.name || "Unknown");
       } catch (error) {
@@ -79,7 +79,7 @@ export default function VulnerabilityDetails() {
       }
     };
     fetchClientName();
-  }, [clientId]);
+  }, [data?.client_id]);
 
   if (loading) {
     return (
@@ -166,7 +166,7 @@ export default function VulnerabilityDetails() {
             </div>
           </div>
         </div>
-        <div className="flex  justify-center w-full">
+        <div className="flex px-10 w-full">
           <div className="flex gap-10">
             <div className="flex flex-col items-center">
               <CustomCircularProgress

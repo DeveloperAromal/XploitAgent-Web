@@ -34,7 +34,17 @@ export async function createVulnerability(attack_id, client_id) {
   }
 }
 
-export async function getVulnerability(client_id) {
+export async function getVulnerability(attack_id) {
+  const { data, error } = await supabase
+    .from("vulnerabilities")
+    .select("*")
+    .eq("attack_id", attack_id);
+  if (error) throw error;
+  return data;
+}
+
+
+export async function getVulnerabilityById(client_id) {
   const { data, error } = await supabase
     .from("vulnerabilities")
     .select("*")
