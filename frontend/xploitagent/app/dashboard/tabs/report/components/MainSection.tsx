@@ -11,12 +11,9 @@ export default function MainSection() {
   const [report, setReport] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [summaryLoading, setSummaryLoading] = useState<boolean>(false);
-  // We no longer need hasPlayedSummary if we're only playing on button click
-  // const [hasPlayedSummary, setHasPlayedSummary] = useState<boolean>(false);
 
   const BASE_URL = "http://localhost:4000";
 
-  // Effect to get attackId from URL (remains the same)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const pathSegments = window.location.pathname.split("/");
@@ -32,7 +29,6 @@ export default function MainSection() {
     }
   }, []);
 
-  // Effect to fetch report when attackId changes (remains the same)
   useEffect(() => {
     const fetchReport = async () => {
       if (!attackId) return;
@@ -43,11 +39,9 @@ export default function MainSection() {
         );
         const fetchedReport = res.data[0]?.report || "No report found.";
         setReport(fetchedReport);
-        // setHasPlayedSummary(false); // No longer needed
       } catch (error) {
         console.error("Error fetching report:", error);
         setReport("Error fetching report.");
-        // setHasPlayedSummary(true); // No longer needed
       } finally {
         setLoading(false);
       }
