@@ -56,22 +56,12 @@ export default function MainSection() {
     fetchReport();
   }, [attackId]);
 
-  // THIS useEffect IS REMOVED:
-  // useEffect(() => {
-  //   if (report && report.trim() !== "" && !loading && !hasPlayedSummary) {
-  //     handleSummary();
-  //   }
-  // }, [report, loading, hasPlayedSummary]);
-
   const handleSummary = async () => {
-    // Prevent re-triggering if already loading or no report
     if (!report || summaryLoading) return;
 
     setSummaryLoading(true);
-    // setHasPlayedSummary(true); // No longer needed here
 
     try {
-      // 1. Get Summary Text
       const res = await axios.post(`${BASE_URL}/api/v1/summarize`, { report });
       const summary = res.data?.summary || "No summary returned.";
 
@@ -81,13 +71,12 @@ export default function MainSection() {
         return;
       }
 
-      // 2. Get Speech Audio
       const speechRes = await fetch("/api/speech", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: summary,
-          voice_id: "nPczCjzI2devNBz1zQrb", // Your verified voice_id
+          voice_id: "nPczCjzI2devNBz1zQrb", 
         }),
       });
 
@@ -98,12 +87,12 @@ export default function MainSection() {
 
         audio.onended = () => {
           setSummaryLoading(false);
-          URL.revokeObjectURL(audioUrl); // Good practice to clean up object URL
+          URL.revokeObjectURL(audioUrl);
         };
         audio.onerror = (e) => {
           console.error("Audio playback error:", e);
           setSummaryLoading(false);
-          URL.revokeObjectURL(audioUrl); // Clean up on error too
+          URL.revokeObjectURL(audioUrl)
         };
 
         try {
@@ -114,9 +103,7 @@ export default function MainSection() {
             "Audio auto-play prevented by browser (user gesture required).",
             playError
           );
-          // If auto-play fails, the button will reset when `summaryLoading` becomes false.
-          // You could optionally store audioUrl in state to offer a manual play button if this happens.
-          setSummaryLoading(false); // Stop loading animation if play fails due to browser policy
+          setSummaryLoading(false); 
         }
       } else {
         const errorData = await speechRes.json();
@@ -144,7 +131,7 @@ export default function MainSection() {
 
       <div className="fixed bottom-10 right-10 z-60">
         <button
-          onClick={handleSummary} // This is the ONLY place handleSummary is called
+          onClick={handleSummary} 
           className={clsx(
             "relative px-5 py-2 rounded-2xl flex gap-2 items-center cursor-pointer text-white transition-all duration-300 ease-in-out",
             {
