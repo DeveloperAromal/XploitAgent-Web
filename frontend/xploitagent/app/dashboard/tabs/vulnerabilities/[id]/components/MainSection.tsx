@@ -9,6 +9,7 @@ import CustomCircularProgress from "./Progress";
 type Vulnerability = {
   id: number;
   attack_id: string;
+  client_id: string;
   attack_name: string;
   description: string;
   severity: string;
