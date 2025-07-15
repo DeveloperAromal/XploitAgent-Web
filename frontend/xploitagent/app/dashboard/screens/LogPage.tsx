@@ -25,6 +25,7 @@ export default function LogPage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const logContainerRef = useRef<HTMLDivElement>(null);
   const [attackId, setAttackId] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [attackData, setAttackData] = useState<any>(null);
 
   const base_url = "http://localhost:4000";
@@ -139,6 +140,7 @@ export default function LogPage() {
       const intervalId = setInterval(fetchLogs, 1000);
       return () => clearInterval(intervalId);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attackId, logFilter]);
 
   

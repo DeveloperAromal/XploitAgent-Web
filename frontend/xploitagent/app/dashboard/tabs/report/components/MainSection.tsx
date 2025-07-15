@@ -106,9 +106,9 @@ export default function MainSection() {
           URL.revokeObjectURL(audioUrl); // Clean up on error too
         };
 
-        // Attempt to play. Handle potential user gesture requirement.
         try {
           await audio.play();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (playError: any) {
           console.warn(
             "Audio auto-play prevented by browser (user gesture required).",
