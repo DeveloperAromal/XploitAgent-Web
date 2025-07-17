@@ -7,12 +7,12 @@ import axios from "axios";
 export default function MainSection() {
   const [urlInput, setUrlInput] = useState<string>("");
   const [projectName, setProjectName] = useState<string>("");
-  const [projectDescription, setProjectDescription] = useState<string>(""); // Kept for UI, but not sent in payload
+  const [projectDescription, setProjectDescription] = useState<string>(""); 
   const [submissionStatus, setSubmissionStatus] = useState<
     "idle" | "success" | "error" | "validating"
   >("idle");
   const [message, setMessage] = useState<string>("");
-  const [step, setStep] = useState<1 | 2>(1); // Step 1: URL Input, Step 2: Basic Details
+  const [step, setStep] = useState<1 | 2>(1);
   const [clientId, setClientId] = useState("");
 
   const router = useRouter();
