@@ -37,15 +37,14 @@ export default function MainSection() {
         setClientId(client_id);
       } catch (error) {
         console.error("Failed to fetch client ID:", error);
-        // Handle error, e.g., redirect to login or show an error message
       }
     };
     fetchData();
-  }, [BASE_URL]); // Added BASE_URL to dependency array
+  }, [BASE_URL]); 
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrlInput(e.target.value);
-    setSubmissionStatus("idle"); // Reset status
+    setSubmissionStatus("idle");
     setMessage("");
   };
 
