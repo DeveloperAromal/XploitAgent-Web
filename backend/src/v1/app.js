@@ -27,5 +27,6 @@ app.use("/api/v1", clientRoute);
 app.use("/api/v1", vulnerabilityRoute);
 app.use("/api/v1", searchRoute);
 app.use("/api/v1", exploitRoutes);
+app.use("/api/v1", notificationRoute);
 
 export default app;
