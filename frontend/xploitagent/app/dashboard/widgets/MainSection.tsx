@@ -17,7 +17,6 @@ export default function MainSection() {
 
   const router = useRouter();
 
-  // Define the base URL for API requests
   const BASE_URL = process.env.APP_BASE_URL || "http://localhost:4000";
 
   useEffect(() => {
