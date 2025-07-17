@@ -14,7 +14,7 @@ export default function MainPage() {
         </p>
         <Link href="/xploitai/chat" className="cursor-pointer">
           <button className="bg-white text-neutral-900 px-2 py-2 rounded-lg inline-flex items-center justify-center gap-2">
-            <code>Try XploitAi</code> <ArrowUpRight />
+            <code>Try XploitAi</code><ArrowUpRight />
           </button>
         </Link>
       </div>
